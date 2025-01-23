@@ -1,3 +1,5 @@
+import Chat from "../../components/chat/chat";
+import Footer from "../../components/home/footer";
 import Header from "../../components/home/header";
 
 function Albums() {
@@ -5,6 +7,8 @@ function Albums() {
     <div>
       <Header />
       albums
+      <Footer />
+      <Chat />
     </div>
   );
 }
