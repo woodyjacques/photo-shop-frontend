@@ -1,8 +1,11 @@
 import logo from "../../assets/img/icon.png";
+import Chat from "../chat/chat";
 
 function Footer() {
   return (
-    <footer className="bg-gray-100 text-gray-600 py-6 border-t border-gray-200">
+    <div>
+        <Chat />
+        <footer className="bg-gray-100 text-gray-600 py-6 border-t border-gray-200">
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row items-center justify-between text-center md:text-left">
           <div className="flex items-center justify-center md:justify-start space-x-2">
@@ -30,6 +33,7 @@ function Footer() {
         </div>
       </div>
     </footer>
+    </div>
   );
 }
 
