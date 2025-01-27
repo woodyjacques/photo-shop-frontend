@@ -11,9 +11,10 @@ import Privacy from "../view/privacy/privacy";
 import Faq from "../view/faq/faq";
 import Count from "../view/count/count";
 import Shopping from "../view/shopping/shopping";
+import Home from "../view/home/home";
 
 const router = createBrowserRouter([
-  { path: "/", element: <Albums /> },
+  { path: "/", element: <Home /> },
   { path: "/albums", element: <Albums /> },
   { path: "/events", element: <Events /> },
   { path: "/login", element: <Login /> },
