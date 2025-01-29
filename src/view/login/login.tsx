@@ -3,8 +3,37 @@ import google from "../../assets/img/google.png";
 import fotologin from "../../assets/img/foto-login.jpeg";
 import Footer from "../../components/home/footer";
 import Chat from "../../components/chat/chat";
+import authRedirectToken from "../../validation/authRedirectToken";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import VerificationUrls from "../../validation/login/verificationUrls";
+import Handle from "../../validation/login/handle";
+import Message from "../../components/message";
 
 function Login() {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  authRedirectToken("/");
+
+  const navigate = useNavigate();
+  const tokens = new URLSearchParams(window.location.search).get("token");
+
+  useEffect(() => {
+    const verify = async () => {
+      await VerificationUrls(tokens, navigate);
+    };
+    verify();
+  }, [tokens, navigate]);
+
+  const { handleSubmit, isLoading } = Handle(
+    email,
+    password,
+    setEmail,
+    setPassword
+  );
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <Header />
@@ -29,8 +58,8 @@ function Login() {
             <p className="text-sm text-gray-600 mt-2">
               Selecciona un método para acceder.
             </p>
-
-            <form className="mt-6">
+            <Message />
+            <form onSubmit={handleSubmit} className="mt-6">
               <div className="mb-4">
                 <label
                   htmlFor="email"
@@ -44,6 +73,8 @@ function Login() {
                     id="email"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
                     placeholder="Correo Electrónico"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
@@ -61,9 +92,11 @@ function Login() {
                     id="password"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
                     placeholder="Contraseña"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <a
-                    href="/password"
+                    href="/email"
                     className="absolute right-2 top-2 text-sm text-gray-500 hover:text-red-500"
                   >
                     Olvidé mi contraseña
@@ -74,8 +107,9 @@ function Login() {
               <button
                 type="submit"
                 className="w-full py-2 px-4 bg-red-500 text-white font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                disabled={isLoading}
               >
-                Ingresar
+                {isLoading ? "Ingresando..." : "Ingresar"}
               </button>
             </form>
 
@@ -99,7 +133,7 @@ function Login() {
         </div>
       </div>
       <Footer />
-      <Chat/>
+      <Chat />
     </div>
   );
 }

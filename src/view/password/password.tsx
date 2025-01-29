@@ -1,12 +1,30 @@
-import Header from "../../components/home/header";
+import HeaderSesion from "../../components/home/headerSesion";
 import fotopassword from "../../assets/img/foto-password.jpg";
+import { useState } from "react";
+import Message from "../../components/message";
+import VerificationUrls from "../../validation/password/verificationUrls";
+import Handle from "../../validation/password/handle";
 import Footer from "../../components/home/footer";
 import Chat from "../../components/chat/chat";
 
 function Password() {
+  const [password, setPassword] = useState("");
+  const [verPassword, setVerPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  VerificationUrls();
+
+  const { handleSubmit, isLoading } = Handle(
+    password,
+    verPassword,
+    setPassword,
+    setVerPassword
+  );
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
-      <Header />
+      <HeaderSesion />
 
       <div className="flex flex-grow flex-wrap">
         <div className="w-full md:w-1/2 bg-red-200 flex items-center justify-center p-6">
@@ -28,30 +46,58 @@ function Password() {
               Recuperar Contraseña
             </h2>
             <p className="text-sm text-gray-600 mt-2">
-              Ingresa tu correo electrónico para restablecer tu contraseña.
+              Ingresa tu nueva contraseña para restablecer tu cuenta.
             </p>
-
-            <form className="mt-6">
-              <div className="mb-4">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Correo Electrónico
+            <Message />
+            <form onSubmit={handleSubmit} className="mt-6">
+              <div className="mb-4 relative">
+                <label className="block text-sm font-medium text-gray-700">
+                  Nueva Contraseña
                 </label>
                 <input
-                  type="email"
-                  id="email"
+                  type={showPassword ? "text" : "password"}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
-                  placeholder="Correo Electrónico"
+                  placeholder="Nueva Contraseña"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute top-9 right-3 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? "👁️" : "👁️‍🗨️"}
+                </button>
+              </div>
+
+              <div className="mb-4 relative">
+                <label className="block text-sm font-medium text-gray-700">
+                  Confirmar Contraseña
+                </label>
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
+                  placeholder="Confirmar Contraseña"
+                  value={verPassword}
+                  onChange={(e) => setVerPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute top-9 right-3 text-gray-500 hover:text-gray-700"
+                >
+                  {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+                </button>
               </div>
 
               <button
                 type="submit"
                 className="w-full py-2 px-4 bg-red-500 text-white font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
+                disabled={isLoading}
               >
-                Enviar enlace de recuperación
+                {isLoading ? "Procesando..." : "Restablecer Contraseña"}
               </button>
             </form>
 
@@ -67,8 +113,9 @@ function Password() {
           </div>
         </div>
       </div>
+
       <Footer />
-      <Chat/>
+      <Chat />
     </div>
   );
 }

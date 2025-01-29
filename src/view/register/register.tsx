@@ -4,17 +4,39 @@ import fotoregister from "../../assets/img/foto-register.jpg";
 import { useState } from "react";
 import Footer from "../../components/home/footer";
 import Chat from "../../components/chat/chat";
+import authRedirectToken from "../../validation/authRedirectToken";
+import Handle from "../../validation/register/handle";
+import Message from "../../components/message";
 
 function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isVerified, setisVerified] = useState(false);
+
+  authRedirectToken("/");
+
+  const { handleSubmit, isLoading } = Handle(
+    name,
+    lastName,
+    email,
+    password,
+    isVerified,
+    setName,
+    setLastName,
+    setEmail,
+    setPassword,
+    setisVerified
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <Header />
 
       <div className="flex flex-grow flex-wrap">
-
         <div className="w-full md:w-1/2 bg-red-200 flex items-center justify-center p-6">
           <div className="relative w-full h-full">
             <img
@@ -34,9 +56,8 @@ function Register() {
             <p className="text-sm text-gray-600 mt-2">
               Completa los campos para crear una cuenta.
             </p>
-
-            <form className="mt-6">
-
+            <Message />
+            <form onSubmit={handleSubmit} className="mt-6">
               <div className="mb-4">
                 <label
                   htmlFor="nombre"
@@ -49,6 +70,8 @@ function Register() {
                   id="nombre"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
                   placeholder="Nombre"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                 />
               </div>
 
@@ -64,6 +87,8 @@ function Register() {
                   id="apellido"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
                   placeholder="Apellido"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
                 />
               </div>
 
@@ -79,6 +104,8 @@ function Register() {
                   id="email"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
                   placeholder="Correo Electrónico"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
 
@@ -95,6 +122,8 @@ function Register() {
                     id="password"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500"
                     placeholder="Contraseña"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <button
                     type="button"
@@ -126,14 +155,14 @@ function Register() {
 
               <button
                 type="submit"
-                disabled={!isTermsAccepted}
+                disabled={!isTermsAccepted || isLoading} 
                 className={`w-full py-2 px-4 text-white font-medium rounded-md focus:outline-none focus:ring-2 ${
-                  isTermsAccepted
+                  isTermsAccepted && !isLoading
                     ? "bg-red-500 hover:bg-red-600 focus:ring-red-500"
                     : "bg-gray-400 cursor-not-allowed"
                 }`}
               >
-                Registrarse
+                {isLoading ? "Registrando..." : "Regístrate"}
               </button>
             </form>
 
@@ -161,7 +190,7 @@ function Register() {
         </div>
       </div>
       <Footer />
-      <Chat/>
+      <Chat />
     </div>
   );
 }

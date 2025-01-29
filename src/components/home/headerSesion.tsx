@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../../assets/img/icon.png";
 import españa from "../../assets/img/espana.png";
 import ingles from "../../assets/img/ingles.png";
 import ModalIdioma from "./modalIdioma";
 import User from "../../assets/img/usuario.png";
 import ModalIam from "./modalIam";
+import { Modal } from "../toast";
+import { useNavigate } from "react-router-dom";
 
 function HeaderSesion() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -13,6 +15,9 @@ function HeaderSesion() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenIam, setIsOpenIam] = useState(false);
+  const [isLogged, setIsLogged] = useState(false);
+
+  const navigate = useNavigate();
 
   const toggleModal = () => {
     setIsOpen(!isOpen);
@@ -21,9 +26,32 @@ function HeaderSesion() {
   const toggleModalIam = () => {
     setIsOpenIam(!isOpenIam);
   };
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const showModal = () => setIsModalVisible(!isModalVisible);
+
+  const logOut = () => {
+    localStorage.removeItem("ACCESS_TOKEN");
+    localStorage.removeItem("USER_SESSION");
+    setIsLogged(false);
+    navigate("/");
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("ACCESS_TOKEN");
+    setIsLogged(!!token);
+  }, []);
 
   return (
     <header className="flex flex-wrap items-center justify-between px-4 py-3 bg-white shadow-md md:px-6">
+      <Modal
+        onConfirm={() => {
+          logOut();
+          showModal();
+        }}
+        isVisible={isModalVisible}
+        onClose={showModal}
+        message="¿Estás seguro de cerrar sesión?"
+      />
 
       <a href="/">
         <div className="flex items-center space-x-2">
@@ -44,7 +72,6 @@ function HeaderSesion() {
       </nav>
 
       <div className="hidden md:flex items-center space-x-4">
-
         <div className="relative">
           <button
             className="text-gray-500 hover:text-black"
@@ -91,7 +118,10 @@ function HeaderSesion() {
             </div>
           )}
         </div>
-        <button className="text-gray-500 hover:text-black" onClick={toggleModalIam}>
+        <button
+          className="text-gray-500 hover:text-black"
+          onClick={toggleModalIam}
+        >
           Soy Fotógrafo
         </button>
 
@@ -149,9 +179,14 @@ function HeaderSesion() {
               >
                 Compras
               </a>
-              <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                Cerrar Sesión
-              </button>
+              {isLogged && (
+                <button
+                  onClick={showModal}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Cerrar Sesión
+                </button>
+              )}
             </div>
           )}
         </div>
